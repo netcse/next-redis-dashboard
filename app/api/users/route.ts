@@ -8,13 +8,13 @@ export async function GET(req: NextRequest) {
         const page = parseInt(url.searchParams.get('page') || '1');
         const limit = parseInt(url.searchParams.get('limit') || '10');
 
-        const { users, totalUsers } = await getPaginatedUsers(page, limit);
+        const { usersWithId, totalUsers } = await getPaginatedUsers(page, limit);
 
-        if (users.length === 0) {
+        if (usersWithId.length === 0) {
             return NextResponse.json({ message: 'No users found' }, { status: 404 });
         }
 
-        return NextResponse.json({ users, totalUsers });
+        return NextResponse.json({ users: usersWithId, totalUsers });
     } catch (err: unknown) {
         if (err instanceof Error) {
             return NextResponse.json({ error: err.message }, { status: 400 });

@@ -1,7 +1,7 @@
 import { createClient } from 'redis';
 import { faker } from '@faker-js/faker';
 
-const TOTAL_USERS = 1_000_000;
+const TOTAL_USERS = 1000;
 const BATCH_SIZE = 1000;
 
 const client = createClient({
@@ -31,8 +31,6 @@ async function insertUsers() {
     const pipeline = client.multi();
 
     for (let j = 0; j < BATCH_SIZE && i + j <= TOTAL_USERS; j++) {
-      const id = i + j;
-
       const user = await generateUser();
       pipeline.hSet(`user:${crypto.randomUUID()}`, user);
     }

@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "@radix-ui/themes/styles.css";
+@import "../node_modules/tailwindcss/dist/lib.d.mts";
+@import "styles.css";
 
 :root {
   --background: #ffffff;
