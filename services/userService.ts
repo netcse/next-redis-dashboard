@@ -34,9 +34,9 @@ export async function getPaginatedUsers(page: number, limit: number) {
         paginatedKeys.map((key) => redis.hGetAll(key))
     );
 
-    // Add Redis key (id) to each users object
+    // Add Redis key (id) to each user object
     const usersWithId = users.map((user, index) => {
-        const id = paginatedKeys[index].split(':')[1]; // Extract id from key
+        const id = paginatedKeys[index].split(':')[1]; // Extract id from a key
         return {...user, id};
     });
 
@@ -48,19 +48,18 @@ export async function getPaginatedUsers(page: number, limit: number) {
 
 export async function getUserById(id: string) {
     const redis = await connectRedis();
-    const user = await redis.hGetAll(`user:${id}`);
-    return user;
+    return await redis.hGetAll(`user:${id}`);
 }
 
 
-// This function updates the users data in Redis based on the provided id
-// and the data object. It returns the updated users data.
+// This function updates the user's data in Redis based on the provided id
+// and the data object. It returns the updated users' data.
 
 export async function updateUser(id: string, data: Partial<User>) {
     const key = `user:${id}`;
     const redis = await connectRedis();
 
-    // Check if the users hash exists
+    // Check if the user's hash exists
     const exists = await redis.exists(key);
     if (!exists) return null;
 
@@ -74,8 +73,7 @@ export async function updateUser(id: string, data: Partial<User>) {
 
     await redis.hSet(key, updatedFields);
 
-    const updatedUser = await redis.hGetAll(key);
-    return updatedUser;
+    return await redis.hGetAll(key);
 }
 
 export async function deleteUserById(id: string) {
