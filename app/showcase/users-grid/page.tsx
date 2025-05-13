@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
+import Image from 'next/image';
+
 
 type User = {
     name: string;
@@ -27,9 +29,9 @@ const Home = () => {
         try {
             const response = await fetch(`/api/users?page=${page}&limit=${usersPerPage}`);
 
-            const { users, totalUsers } = await response.json();
+            const {users, totalUsers} = await response.json();
 
-            setUsers(users); // Make sure your API includes Redis key (id) with each users
+            setUsers(users); // Make sure your API includes Redis key (id) with each user
             setTotalUsers(totalUsers);
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -50,8 +52,8 @@ const Home = () => {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
     };
 
 
@@ -86,7 +88,7 @@ const Home = () => {
         try {
             const response = await fetch(`/api/users/${selectedUser.id}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(formData),
             });
             if (response.ok) {
@@ -105,7 +107,7 @@ const Home = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-semibold text-center mb-6">Paginated Users</h1>
+            <h1 className="text-3xl font-semibold text-center mb-6">1M Users Grid</h1>
 
             {loading ? (
                 <p className="text-center text-gray-500">Loading...</p>
@@ -114,31 +116,44 @@ const Home = () => {
             ) : (
                 <div>
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {users.map((user) => (
-                            <li
-                                key={user.id}
-                                onClick={() => handleUserClick(user)}
-                                className="cursor-pointer p-6 rounded-xl shadow-md transition-transform duration-200 hover:scale-[1.02] bg-white"
-                            >
-                                <h2 className="text-xl font-semibold text-blue-700 mb-2">{user.name}</h2>
-                                <div className="text-sm text-gray-700 space-y-1">
-                                    <p><span className="font-medium text-gray-800">Sex:</span> {user.sex}</p>
-                                    <p><span className="font-medium text-gray-800">Date of Birth:</span> {user.dob}</p>
-                                    <p><span className="font-medium text-gray-800">Email:</span> {user.email}</p>
-                                    <p><span className="font-medium text-gray-800">Mobile:</span> {user.mobile}</p>
-                                    <p><span className="font-medium text-gray-800">Address:</span> {user.address}</p>
-                                </div>
-                            </li>
-                        ))}
+                        {users.map((user) => {
+                            const avatarUrl = `https://i.pravatar.cc/150?u=${user.id}`; // unique avatar
+                            return (
+                                <li
+                                    key={user.id}
+                                    onClick={() => handleUserClick(user)}
+                                    className="cursor-pointer flex items-center p-4 rounded-xl shadow-md bg-white hover:shadow-lg transition"
+                                >
+                                    <Image
+                                        src={avatarUrl}
+                                        alt={user.name}
+                                        width={64} // equivalent to w-16 (16 * 4 = 64px)
+                                        height={64} // equivalent to h-16
+                                        className="rounded-full object-cover mr-4 border border-gray-300"
+                                    />
+
+                                    <div className="text-sm text-gray-700 space-y-1">
+                                        <h2 className="text-lg font-semibold text-blue-700">{user.name}</h2>
+                                        <p><span className="font-medium text-gray-800">Sex:</span> {user.sex}</p>
+                                        <p><span className="font-medium text-gray-800">DOB:</span> {user.dob}</p>
+                                        <p><span className="font-medium text-gray-800">Email:</span> {user.email}</p>
+                                        <p><span className="font-medium text-gray-800">Mobile:</span> {user.mobile}</p>
+                                        <p><span className="font-medium text-gray-800">Address:</span> {user.address}
+                                        </p>
+                                    </div>
+                                </li>
+                            );
+                        })}
                     </ul>
+
 
                     {/* Simple popup modal */}
                     {selectedUser && (
                         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50"
-                            onClick={() => setSelectedUser(null)} // closes on backdrop click
+                             onClick={() => setSelectedUser(null)} // closes on the backdrop click
                         >
                             <div className="bg-white dark:bg-gray-800 dark:text-white p-6 rounded-lg w-[90%] md:w-1/2"
-                                onClick={(e) => e.stopPropagation()} // prevent inner click from closing
+                                 onClick={(e) => e.stopPropagation()} // prevent inner click from closing
                             >
                                 <h2 className="text-xl font-bold mb-4">Edit User</h2>
                                 <div className="grid gap-4">
@@ -192,7 +207,7 @@ const Home = () => {
                                         onChange={(e) => {
                                             const value = e.target.value;
                                             if (/^\d{0,11}$/.test(value)) {
-                                                setFormData({ ...formData, mobile: value });
+                                                setFormData({...formData, mobile: value});
                                             }
                                         }}
                                         placeholder="Mobile (e.g. 017xxxxxxxx)"
@@ -213,11 +228,13 @@ const Home = () => {
 
                                 <div className="flex justify-end mt-4 gap-2">
                                     <button className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                                        onClick={() => setSelectedUser(null)}
-                                    >Cancel</button>
+                                            onClick={() => setSelectedUser(null)}
+                                    >Cancel
+                                    </button>
                                     <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                                        onClick={handleSave}
-                                    >Save</button>
+                                            onClick={handleSave}
+                                    >Save
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -225,7 +242,7 @@ const Home = () => {
 
                     <div className="flex justify-center mt-6">
                         <button
-                            className={`px-4 py-2 mx-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
+                            className={`px-4 py-2 mx-2 rounded-lg ${currentPage === 1 ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
                         >
@@ -235,7 +252,7 @@ const Home = () => {
                             Page {currentPage} of {totalPages}
                         </span>
                         <button
-                            className={`px-4 py-2 mx-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
+                            className={`px-4 py-2 mx-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
                         >

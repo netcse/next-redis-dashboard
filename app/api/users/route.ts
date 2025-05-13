@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPaginatedUsers, saveMultipleUsers } from '@/services/userService';
+import {getPaginatedUsers, saveUserToDB} from '@/services/userService';
 import { User } from '@/types/user';
 
 export async function GET(req: NextRequest) {
+
     try {
         const url = new URL(req.url);
         const page = parseInt(url.searchParams.get('page') || '1');
@@ -25,15 +26,12 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const users: User[] = await req.json();
 
-        if (!Array.isArray(users)) {
-            return NextResponse.json({ error: 'Expected an array of users' }, { status: 400 });
-        }
+        const user: User = await req.json();
 
-        const savedIds = await saveMultipleUsers(users);
+        await saveUserToDB(user);
 
-        return NextResponse.json({ message: 'Users saved successfully', ids: savedIds });
+        return NextResponse.json({ message: 'User saved' });
     } catch (err: unknown) {
         if (err instanceof Error) {
             return NextResponse.json({ error: err.message || 'Error' }, { status: 400 });

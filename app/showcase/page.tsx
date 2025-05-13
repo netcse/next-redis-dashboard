@@ -4,7 +4,7 @@ export default function HomePage() {
     return (
         <main className="min-h-screen bg-gray-50 text-gray-800 px-6 py-12">
             <section className="text-center max-w-4xl mx-auto">
-                <h1 className="text-5xl font-bold mb-4 text-blue-600">Next.js API Showcase</h1>
+                <h1 className="text-5xl font-bold mb-4 text-blue-600">Next.js Dev Showcase</h1>
                 <p className="text-lg text-gray-600 mb-6">
                     Explore high-performance features powered by Next.js, Redis, and scalable API routing.
                 </p>
